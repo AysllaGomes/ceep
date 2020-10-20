@@ -5,8 +5,8 @@ import java.util.List;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import ayslla.gomes.ceep.R;
 import ayslla.gomes.ceep.model.Nota;
@@ -20,18 +20,25 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
+        List<Nota> todasNotas = notasExemplos();
+        configuraRecyclerView(todasNotas);
+    }
 
+    private List<Nota> notasExemplos() {
         NotaDAO dao = new NotaDAO();
-
         for (int i = 1; i <= 10000; i++) {
             dao.insere(new Nota("Nota " + i, "Descrição" + i));
         }
-        List<Nota> todasNotas = dao.todos();
+        return dao.todos();
+    }
 
+    private void configuraRecyclerView(List<Nota> todasNotas) {
+        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
+        configuraAdapter(todasNotas, listaNotas);
+    }
+
+    private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         listaNotas.setAdapter(new ListaNotasAdapter(this, todasNotas));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        listaNotas.setLayoutManager(layoutManager);
     }
 
 }
