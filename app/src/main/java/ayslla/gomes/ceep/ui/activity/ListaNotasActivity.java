@@ -3,10 +3,12 @@ package ayslla.gomes.ceep.ui.activity;
 import java.util.List;
 
 import android.os.Bundle;
+import android.view.View;
+import android.content.Intent;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import ayslla.gomes.ceep.R;
 import ayslla.gomes.ceep.model.Nota;
@@ -20,16 +22,22 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        List<Nota> todasNotas = notasExemplos();
-        configuraRecyclerView(todasNotas);
+        TextView createNota = findViewById(R.id.lista_notas_insere_nota);
+        createNota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent startFormulario = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
+                startActivity(startFormulario);
+            }
+        });
     }
 
-    private List<Nota> notasExemplos() {
+    @Override
+    protected void onResume() {
         NotaDAO dao = new NotaDAO();
-        for (int i = 1; i <= 10000; i++) {
-            dao.insere(new Nota("Nota " + i, "Descrição" + i));
-        }
-        return dao.todos();
+        List<Nota> todasNotas = dao.todos();
+        configuraRecyclerView(todasNotas);
+        super.onResume();
     }
 
     private void configuraRecyclerView(List<Nota> todasNotas) {

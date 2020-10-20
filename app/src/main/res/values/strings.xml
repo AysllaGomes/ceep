@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Ceep</string>
     <string name="inserir_uma_nota">Inserir uma nota</string>
+    <string name="formulario_nota_titulo">Título</string>
+    <string name="formulario_nota_descricao">Descrição</string>
+    <string name="menu_formulario_salvar_nota">Salvar nota</string>
 </resources>
