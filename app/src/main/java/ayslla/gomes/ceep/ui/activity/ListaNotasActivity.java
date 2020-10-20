@@ -3,14 +3,15 @@ package ayslla.gomes.ceep.ui.activity;
 import java.util.List;
 
 import android.os.Bundle;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ayslla.gomes.ceep.R;
 import ayslla.gomes.ceep.model.Nota;
 import ayslla.gomes.ceep.dao.NotaDAO;
-import ayslla.gomes.ceep.ui.adapter.ListaNotasAdapter;
+import ayslla.gomes.ceep.ui.recyclerview.adapter.ListaNotasAdapter;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
@@ -19,13 +20,18 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        ListView listaNotas = findViewById(R.id.lista_notas_listagem);
+        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
 
         NotaDAO dao = new NotaDAO();
-        dao.insere(new Nota("Primeira nota", "Primeira descrição"));
+
+        for (int i = 1; i <= 10000; i++) {
+            dao.insere(new Nota("Nota " + i, "Descrição" + i));
+        }
         List<Nota> todasNotas = dao.todos();
 
         listaNotas.setAdapter(new ListaNotasAdapter(this, todasNotas));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        listaNotas.setLayoutManager(layoutManager);
     }
 
 }
