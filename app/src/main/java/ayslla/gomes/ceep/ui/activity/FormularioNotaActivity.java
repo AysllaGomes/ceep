@@ -2,6 +2,7 @@ package ayslla.gomes.ceep.ui.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.TextView;
@@ -14,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.POSITION_INVALID;
-import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.RESULT_CODE_NOTE_CREATE;
 
 public class FormularioNotaActivity extends AppCompatActivity {
 
@@ -76,7 +76,7 @@ public class FormularioNotaActivity extends AppCompatActivity {
         Intent resultadoInsercao = new Intent();
         resultadoInsercao.putExtra(CHAVE_NOTA, nota);
         resultadoInsercao.putExtra(CHAVE_POSICAO, position);
-        setResult(RESULT_CODE_NOTE_CREATE, resultadoInsercao);
+        setResult(Activity.RESULT_OK, resultadoInsercao);
     }
 
 }

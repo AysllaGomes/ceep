@@ -5,6 +5,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.app.Activity;
 import android.content.Intent;
 import android.widget.TextView;
 
@@ -22,8 +23,7 @@ import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.POSITION_INVALID;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.EXCEPTION_UPDATE_NOTE;
-import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.REQUEST_CODE_NOTE_EDIT;
-import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.RESULT_CODE_NOTE_CREATE;
+import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.REQUEST_CODE_NOTE_UPDATE;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.REQUEST_CODE_INSERT_NOTE;
 
 public class ListaNotasActivity extends AppCompatActivity {
@@ -46,22 +46,30 @@ public class ListaNotasActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ( isResultWithNote(requestCode, resultCode, data) ) {
-            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            create(notaRecebida);
+        if ( canInsertNote(requestCode, data) ) {
+
+            if ( isResultCodeOk(resultCode) ) {
+                Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                create(notaRecebida);
+            }
+
         }
 
-        if ( canEditNote(requestCode, resultCode, data) ) {
-            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            int posicao = data.getIntExtra(CHAVE_POSICAO, POSITION_INVALID);
+        if ( canUpdateNote(requestCode, data) ) {
 
-            if ( isPositionValid(posicao) ) {
-                update(notaRecebida, posicao);
-            } else {
-                Toast.makeText(this,
-                        EXCEPTION_UPDATE_NOTE,
-                        Toast.LENGTH_SHORT).show();
+            if (isResultCodeOk(resultCode)) {
+                Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                int posicao = data.getIntExtra(CHAVE_POSICAO, POSITION_INVALID);
+
+                if ( isPositionValid(posicao) ) {
+                    update(notaRecebida, posicao);
+                } else {
+                    Toast.makeText(this,
+                            EXCEPTION_UPDATE_NOTE,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
+
         }
 
     }
@@ -75,12 +83,12 @@ public class ListaNotasActivity extends AppCompatActivity {
         return posicao > POSITION_INVALID;
     }
 
-    private boolean canEditNote(int requestCode, int resultCode, @Nullable Intent data) {
-        return isCodeRequestEdit(requestCode) && isResultCode(resultCode) && hasNote(data);
+    private boolean canUpdateNote(int requestCode, @Nullable Intent data) {
+        return isCodeRequestEdit(requestCode) && hasNote(data);
     }
 
     private boolean isCodeRequestEdit(int requestCode) {
-        return requestCode == REQUEST_CODE_NOTE_EDIT;
+        return requestCode == REQUEST_CODE_NOTE_UPDATE;
     }
 
     private List<Nota> pegaTodasAsNotas() {
@@ -94,18 +102,16 @@ public class ListaNotasActivity extends AppCompatActivity {
         return dao.todos();
     }
 
-    private boolean isResultWithNote(int requestCode, int resultCode, @Nullable Intent data) {
-        return isCodeRequestInsertNote(requestCode)
-                && isResultCode(resultCode)
-                && hasNote(data);
+    private boolean canInsertNote(int requestCode, @Nullable Intent data) {
+        return isCodeRequestInsertNote(requestCode) && hasNote(data);
     }
 
     private boolean isCodeRequestInsertNote(int requestCode) {
         return requestCode == REQUEST_CODE_INSERT_NOTE;
     }
 
-    private boolean isResultCode(int resultCode) {
-        return resultCode == RESULT_CODE_NOTE_CREATE;
+    private boolean isResultCodeOk(int resultCode) {
+        return resultCode == Activity.RESULT_OK;
     }
 
     private boolean hasNote(@Nullable Intent data) {
@@ -137,7 +143,7 @@ public class ListaNotasActivity extends AppCompatActivity {
         Intent openFormWithNote = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
         openFormWithNote.putExtra(CHAVE_NOTA, nota);
         openFormWithNote.putExtra(CHAVE_POSICAO, posicao);
-        startActivityForResult(openFormWithNote, REQUEST_CODE_NOTE_EDIT);
+        startActivityForResult(openFormWithNote, REQUEST_CODE_NOTE_UPDATE);
     }
 
     private void configuraActionInsertNote() {
