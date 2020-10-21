@@ -2,9 +2,6 @@ package ayslla.gomes.ceep.ui.recyclerview.adapter;
 
 import java.util.List;
 
-import ayslla.gomes.ceep.R;
-import ayslla.gomes.ceep.model.Nota;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.content.Context;
@@ -14,14 +11,23 @@ import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ayslla.gomes.ceep.R;
+import ayslla.gomes.ceep.model.Nota;
+import ayslla.gomes.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
+
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotaViewHolder> {
 
     private Context context;
     private List<Nota> notas;
+    private  OnItemClickListener onItemClickListener;
 
     public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
         this.notas = notas;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -40,18 +46,31 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
     @Override
     public int getItemCount() { return notas.size(); }
 
+    public void altera(int posicao, Nota nota) {
+        notas.set(posicao, nota);
+        notifyDataSetChanged();
+    }
+
     class NotaViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
         private final TextView desciption;
+        private Nota nota;
 
         public NotaViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.item_nota_titulo);
             desciption = itemView.findViewById(R.id.item_nota_descricao);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(nota, getAdapterPosition());
+                }
+            });
         }
 
         public void vincula(Nota nota) {
+            this.nota = nota;
             preencheCampos(nota);
         }
 
