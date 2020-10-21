@@ -54,17 +54,17 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
     public void update(int position, Nota nota) {
         notas.set(position, nota);
-        notifyDataSetChanged();
+        notifyItemChanged(position);
     }
 
     public void remove(int position) {
         notas.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
     }
 
-    public void change(int initialPosition, int finalPosition) {
-        Collections.swap(notas, initialPosition, finalPosition);
-        notifyDataSetChanged();
+    public void change(int start, int end) {
+        Collections.swap(notas, start, end);
+        notifyItemMoved(start, end);
     }
 
     class NotaViewHolder extends RecyclerView.ViewHolder {

@@ -19,32 +19,38 @@ import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.POSITION_INVA
 public class FormularioNotaActivity extends AppCompatActivity {
 
     private TextView title;
-    private TextView decription;
+    private TextView description;
+
     private int position = POSITION_INVALID;
+
+    public static final String TITLE_CREATE_APPBAR = "Insere nota";
+    public static final String TITLE_UPDATE_APPBAR = "Altera nota";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario_nota);
 
-        inicializaCampos();
+        setTitle(TITLE_CREATE_APPBAR);
+        createForm();
 
-        Intent dadosRecebidos = getIntent();
-        if ( dadosRecebidos.hasExtra(CHAVE_NOTA) ) {
-            Nota notaRecebida = (Nota) dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
-            position = dadosRecebidos.getIntExtra(CHAVE_POSICAO, POSITION_INVALID);
-            preencheCampos(notaRecebida);
+        Intent receivedData = getIntent();
+        if ( receivedData.hasExtra(CHAVE_NOTA) ) {
+            setTitle(TITLE_UPDATE_APPBAR);
+            Nota noteReceived = (Nota) receivedData.getSerializableExtra(CHAVE_NOTA);
+            position = receivedData.getIntExtra(CHAVE_POSICAO, POSITION_INVALID);
+            populateForm(noteReceived);
         }
     }
 
-    private void inicializaCampos() {
+    private void createForm() {
         title = findViewById(R.id.formulario_nota_titulo);
-        decription = findViewById(R.id.formulario_nota_descricao);
+        description = findViewById(R.id.formulario_nota_descricao);
     }
 
-    private void preencheCampos(Nota nota) {
+    private void populateForm(Nota nota) {
         title.setText(nota.getTitulo());
-        decription.setText(nota.getDescricao());
+        description.setText(nota.getDescricao());
     }
 
     @Override
@@ -56,8 +62,8 @@ public class FormularioNotaActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if ( isMenuSaveNote(item) ) {
-            Nota notaCriada = createNote();
-            returnNote(notaCriada);
+            Nota createNote = createNote();
+            returnNote(createNote);
             finish();
         }
 
@@ -69,14 +75,14 @@ public class FormularioNotaActivity extends AppCompatActivity {
     }
 
     private Nota createNote() {
-        return new Nota(title.getText().toString(), decription.getText().toString());
+        return new Nota(title.getText().toString(), description.getText().toString());
     }
 
     private void returnNote(Nota nota) {
-        Intent resultadoInsercao = new Intent();
-        resultadoInsercao.putExtra(CHAVE_NOTA, nota);
-        resultadoInsercao.putExtra(CHAVE_POSICAO, position);
-        setResult(Activity.RESULT_OK, resultadoInsercao);
+        Intent resultInsert = new Intent();
+        resultInsert.putExtra(CHAVE_NOTA, nota);
+        resultInsert.putExtra(CHAVE_POSICAO, position);
+        setResult(Activity.RESULT_OK, resultInsert);
     }
 
 }

@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 
 import ayslla.gomes.ceep.R;
 import ayslla.gomes.ceep.model.Nota;
@@ -31,11 +31,14 @@ import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.REQUEST_CODE_
 public class ListaNotasActivity extends AppCompatActivity {
 
     private ListaNotasAdapter adapter;
+    public static final String TITLE_APPBAR = "Notas";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
+
+        setTitle(TITLE_APPBAR);
 
         List<Nota> todasNotas = pegaTodasAsNotas();
 
@@ -95,12 +98,6 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private List<Nota> pegaTodasAsNotas() {
         NotaDAO dao = new NotaDAO();
-
-        for (int i = 0; i < 10; i++) {
-            dao.insere( new Nota("Título " + (i+1),
-                    "Descrição " + (i + 1) ));
-        }
-
         return dao.todos();
     }
 
@@ -117,7 +114,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private boolean hasNote(@Nullable Intent data) {
-        return data.hasExtra(CHAVE_NOTA);
+        return data != null &&  data.hasExtra(CHAVE_NOTA);
     }
 
     private void create(Nota nota) {
