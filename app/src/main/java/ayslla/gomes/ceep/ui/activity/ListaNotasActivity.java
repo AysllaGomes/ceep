@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ayslla.gomes.ceep.R;
@@ -18,6 +19,7 @@ import ayslla.gomes.ceep.model.Nota;
 import ayslla.gomes.ceep.dao.NotaDAO;
 import ayslla.gomes.ceep.ui.recyclerview.adapter.ListaNotasAdapter;
 import ayslla.gomes.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
+import ayslla.gomes.ceep.ui.recyclerview.helper.callback.NotaItemTouchHelperCallback;
 
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static ayslla.gomes.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
@@ -37,7 +39,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
         List<Nota> todasNotas = pegaTodasAsNotas();
 
-        configuraRecyclerView(todasNotas);
+        configRecyclerView(todasNotas);
         configuraActionInsertNote();
     }
 
@@ -76,7 +78,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private void update(Nota nota, int posicao) {
         new NotaDAO().altera(posicao, nota);
-        adapter.altera(posicao, nota);
+        adapter.update(posicao, nota);
     }
 
     private boolean isPositionValid(int posicao) {
@@ -120,15 +122,21 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private void create(Nota nota) {
         new NotaDAO().insere(nota);
-        adapter.adiciona(nota);
+        adapter.add(nota);
     }
 
-    private void configuraRecyclerView(List<Nota> todasNotas) {
+    private void configRecyclerView(List<Nota> todasNotas) {
         RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
-        configuraAdapter(todasNotas, listaNotas);
+        configAdapter(todasNotas, listaNotas);
+        configItemTouchHelper(listaNotas);
     }
 
-    private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
+    private void configItemTouchHelper(RecyclerView listaNotas) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new NotaItemTouchHelperCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(listaNotas);
+    }
+
+    private void configAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         adapter = new ListaNotasAdapter(this, todasNotas);
         listaNotas.setAdapter(adapter);
         adapter.setOnItemClickListener(new OnItemClickListener() {

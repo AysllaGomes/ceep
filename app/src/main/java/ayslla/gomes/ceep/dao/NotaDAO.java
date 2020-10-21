@@ -27,11 +27,12 @@ public class NotaDAO {
         notas.remove(posicao);
     }
 
-    public void troca(int posicaoInicio, int posicaoFim) {
+    public void change(int posicaoInicio, int posicaoFim) {
         Collections.swap(notas, posicaoInicio, posicaoFim);
     }
 
     public void removeTodos() {
         notas.clear();
     }
+
 }

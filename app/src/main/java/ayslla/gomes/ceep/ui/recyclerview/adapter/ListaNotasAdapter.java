@@ -1,6 +1,7 @@
 package ayslla.gomes.ceep.ui.recyclerview.adapter;
 
 import java.util.List;
+import java.util.Collections;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
     private Context context;
     private List<Nota> notas;
-    private  OnItemClickListener onItemClickListener;
+    private OnItemClickListener onItemClickListener;
 
     public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
@@ -46,8 +47,23 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
     @Override
     public int getItemCount() { return notas.size(); }
 
-    public void altera(int posicao, Nota nota) {
-        notas.set(posicao, nota);
+    public void add(Nota nota) {
+        notas.add(nota);
+        notifyDataSetChanged();
+    }
+
+    public void update(int position, Nota nota) {
+        notas.set(position, nota);
+        notifyDataSetChanged();
+    }
+
+    public void remove(int position) {
+        notas.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void change(int initialPosition, int finalPosition) {
+        Collections.swap(notas, initialPosition, finalPosition);
         notifyDataSetChanged();
     }
 
@@ -79,11 +95,6 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
             desciption.setText(nota.getDescricao());
         }
 
-    }
-
-    public void adiciona(Nota nota) {
-        notas.add(nota);
-        notifyDataSetChanged();
     }
 
 }
